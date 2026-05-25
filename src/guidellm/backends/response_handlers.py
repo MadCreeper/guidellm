@@ -338,9 +338,17 @@ class ChatCompletionsResponseHandler(TextCompletionsResponseHandler):
         choices, usage = self.extract_choices_and_usage(data)
         choice: dict[str, dict] = choices[0] if choices else {}
 
-        if choices and (content := choice.get("delta", {}).get("content")):
-            self.streaming_texts.append(content)
-            updated = True
+        if choices:
+            delta = choice.get("delta", {})
+            # Reasoning-capable models stream `delta.reasoning` chunks before any
+            # `delta.content` chunks. Treating only `content` as "first token"
+            # inflates TTFT for those models. Account for either field.
+            if reasoning := delta.get("reasoning"):
+                self.streaming_texts.append(reasoning)
+                updated = True
+            if content := delta.get("content"):
+                self.streaming_texts.append(content)
+                updated = True
 
         if usage:
             self.streaming_usage = usage
