@@ -729,7 +729,7 @@ class ChatCompletionsRequestHandler(TextCompletionsRequestHandler):
 
         # Accumulate streamed tool_calls deltas.  Each tool call may be split
         # across multiple chunks; we reassemble by ``index``.
-        for tc_delta in delta.get("tool_calls", []):
+        for tc_delta in (delta.get("tool_calls") or []):
             self._accumulate_tool_call_delta(tc_delta)
             updated = True
 
