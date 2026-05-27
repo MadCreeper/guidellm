@@ -16,7 +16,14 @@ from collections.abc import AsyncIterator
 from typing import Any, Literal
 
 import httpx
-from pydantic import AliasChoices, Field, SecretStr, field_validator, model_validator
+from pydantic import (
+    AliasChoices,
+    Field,
+    SecretStr,
+    field_serializer,
+    field_validator,
+    model_validator,
+)
 
 from guidellm.backends.backend import Backend, BackendArgs
 from guidellm.backends.openai.request_handlers import (
@@ -148,6 +155,21 @@ class OpenAIHTTPBackendArgs(BackendArgs):
             "cancel remaining turns)."
         ),
     )
+
+    @field_serializer("api_key", when_used="always")
+    def serialize_api_key(self, value: SecretStr | None) -> str | None:
+        """Serialize api_key to a JSON-safe (masked) string in every dump mode.
+
+        A bare SecretStr is not JSON-serializable under python-mode model_dump(),
+        which crashes report.save_file() and the backend ``info`` dict embedded in
+        each benchmark's config (and, transitively, the HTML/CSV outputs that
+        json.dumps that config). Masking — rather than exposing
+        get_secret_value() — matches pydantic's json-mode default and keeps real
+        keys out of persisted or uploaded reports. Runtime auth is unaffected: it
+        reads the live SecretStr via get_secret_value(), and workers receive the
+        backend by pickle, not by model_dump.
+        """
+        return str(value) if value is not None else None
 
     @field_validator("target", mode="after")
     @classmethod
