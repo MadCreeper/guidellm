@@ -1,0 +1,99 @@
+{
+  "model": "glm-5",
+  "scores": {
+    "aime2025": 0.7,
+    "gpqa_diamond": 0.88,
+    "ifeval": 0.48,
+    "mmlu_pro": 0.86,
+    "hle": 0.16,
+    "livecodebench_v6": 0.8
+  },
+  "average": 0.6466666666666666,
+  "details": {
+    "aime2025": {
+      "score": 0.7,
+      "total": 30,
+      "correct": 21,
+      "failed": 0,
+      "elapsed_s": 3497.1854319069535,
+      "perf": {
+        "ttft_ms_mean": 1320.6063773327817,
+        "tpot_ms_mean": 21.618445495341128,
+        "output_tps_mean": 46.440452644428426,
+        "service_tps": 169.19577515149135,
+        "completion_tokens_total": 591709
+      }
+    },
+    "gpqa_diamond": {
+      "score": 0.88,
+      "total": 50,
+      "correct": 44,
+      "failed": 0,
+      "elapsed_s": 3485.7961515206844,
+      "perf": {
+        "ttft_ms_mean": 1147.1090127993375,
+        "tpot_ms_mean": 22.135561044946208,
+        "output_tps_mean": 45.06413882866679,
+        "service_tps": 163.96713265939482,
+        "completion_tokens_total": 571556
+      }
+    },
+    "ifeval": {
+      "score": 0.48,
+      "total": 50,
+      "correct": 24,
+      "failed": 0,
+      "elapsed_s": 767.2125782542862,
+      "perf": {
+        "ttft_ms_mean": 574.6874475572258,
+        "tpot_ms_mean": 21.37710668176999,
+        "output_tps_mean": 46.07932814756466,
+        "service_tps": 163.55701608219687,
+        "completion_tokens_total": 125483
+      }
+    },
+    "mmlu_pro": {
+      "score": 0.86,
+      "total": 50,
+      "correct": 43,
+      "failed": 0,
+      "elapsed_s": 1607.4832466128282,
+      "perf": {
+        "ttft_ms_mean": 999.7326220665127,
+        "tpot_ms_mean": 21.70710114368766,
+        "output_tps_mean": 44.23109427965778,
+        "service_tps": 172.06897837525037,
+        "completion_tokens_total": 276598
+      }
+    },
+    "hle": {
+      "score": 0.16,
+      "total": 50,
+      "correct": 8,
+      "failed": 0,
+      "elapsed_s": 5768.990373163018,
+      "perf": {
+        "ttft_ms_mean": 1836.1403191834688,
+        "tpot_ms_mean": 22.232828456156035,
+        "output_tps_mean": 44.970766229227465,
+        "service_tps": 178.60924240632,
+        "completion_tokens_total": 1030395
+      }
+    },
+    "livecodebench_v6": {
+      "score": 0.8,
+      "total": 50,
+      "correct": 40,
+      "failed": 0,
+      "elapsed_s": 2683.321083567571,
+      "perf": {
+        "ttft_ms_mean": 814.2040654737502,
+        "tpot_ms_mean": 19.571178951244583,
+        "output_tps_mean": 49.65408601298017,
+        "service_tps": 189.87887924414682,
+        "completion_tokens_total": 509506
+      }
+    }
+  },
+  "elapsed_s": 17810.00898273615
+}
