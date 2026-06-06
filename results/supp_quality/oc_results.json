@@ -1,0 +1,54 @@
+{
+  "model": "glm-5",
+  "scores": {
+    "aime2025": 0.8,
+    "hle": 0.18,
+    "livecodebench_v6": 0.86
+  },
+  "average": 0.6133333333333334,
+  "details": {
+    "aime2025": {
+      "score": 0.8,
+      "total": 30,
+      "correct": 24,
+      "failed": 0,
+      "elapsed_s": 7104.218836328015,
+      "perf": {
+        "ttft_ms_mean": 135636.55406671265,
+        "tpot_ms_mean": 62.56748599104344,
+        "output_tps_mean": 21.264131357954668,
+        "service_tps": 125.1015798465143,
+        "completion_tokens_total": 888749
+      }
+    },
+    "hle": {
+      "score": 0.18,
+      "total": 50,
+      "correct": 9,
+      "failed": 1,
+      "elapsed_s": 16169.59931490384,
+      "perf": {
+        "ttft_ms_mean": 113627.42976729322,
+        "tpot_ms_mean": 115.97825345368388,
+        "output_tps_mean": 15.602019020800839,
+        "service_tps": 108.94376327410411,
+        "completion_tokens_total": 1761577
+      }
+    },
+    "livecodebench_v6": {
+      "score": 0.86,
+      "total": 50,
+      "correct": 43,
+      "failed": 0,
+      "elapsed_s": 4643.724503039848,
+      "perf": {
+        "ttft_ms_mean": 2490.7880155276507,
+        "tpot_ms_mean": 24.10905979066164,
+        "output_tps_mean": 42.69678234720751,
+        "service_tps": 141.12486638063947,
+        "completion_tokens_total": 655345
+      }
+    }
+  },
+  "elapsed_s": 27917.54683715105
+}
