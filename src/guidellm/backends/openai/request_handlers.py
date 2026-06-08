@@ -24,6 +24,7 @@ from guidellm.utils.imports import json
 from guidellm.utils.registry import RegistryMixin
 
 __all__ = [
+    "REASONING_DELTA_KEYS",
     "AudioRequestHandler",
     "ChatCompletionsRequestHandler",
     "EmbeddingsRequestHandler",
@@ -35,6 +36,19 @@ __all__ = [
     "StreamingToolCallFunction",
     "TextCompletionsRequestHandler",
 ]
+
+# Delta keys under which OpenAI-compatible servers stream chain-of-thought /
+# reasoning text. Different backends disagree on the name: vLLM, SGLang,
+# DeepSeek and GLM emit "reasoning_content"; OpenRouter (and the upstream
+# guidellm fix) use "reasoning". We treat any of these as reasoning output so
+# that (a) the first reasoning chunk sets TTFT and (b) reasoning tokens are
+# counted toward output. Add new keys here as backends introduce them.
+REASONING_DELTA_KEYS: tuple[str, ...] = (
+    "reasoning_content",
+    "reasoning",
+    "reasoning_text",
+    "thinking",
+)
 
 
 class OpenAIRequestHandler(Protocol):
@@ -720,9 +734,15 @@ class ChatCompletionsRequestHandler(TextCompletionsRequestHandler):
         choice: dict[str, dict] = choices[0] if choices else {}
         delta = choice.get("delta", {}) if choices else {}
 
-        if reasoning := delta.get("reasoning"):
-            self.streaming_texts.append(reasoning)
-            updated = True
+        for reasoning_key in REASONING_DELTA_KEYS:
+            reasoning = delta.get(reasoning_key)
+            if isinstance(reasoning, str) and reasoning:
+                # Count reasoning as output text and let the first reasoning
+                # chunk set TTFT (updated=True). Servers send at most one of
+                # these keys per delta, so stop after the first match.
+                self.streaming_texts.append(reasoning)
+                updated = True
+                break
         if content := delta.get("content"):
             self.streaming_texts.append(content)
             updated = True
