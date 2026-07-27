@@ -45,9 +45,23 @@ __all__ = [
     "TextCompletionsRequestHandler",
     "ToolCall",
     "ToolCallFunction",
+    "REASONING_DELTA_KEYS",
     "WSEventResult",
     "WSStreamingEventResult",
 ]
+
+# Delta keys under which OpenAI-compatible servers stream reasoning /
+# chain-of-thought text. Backends disagree on the name: vLLM, SGLang, DeepSeek
+# and GLM emit "reasoning_content"; OpenRouter uses "reasoning"; the remaining
+# two are defensive. Any of these counts as reasoning output, so the first
+# such chunk sets TTFT even when visible content arrives much later. Add new
+# keys here as backends introduce them.
+REASONING_DELTA_KEYS: tuple[str, ...] = (
+    "reasoning_content",
+    "reasoning",
+    "reasoning_text",
+    "thinking",
+)
 
 
 class OpenAIRequestHandler(Protocol):
@@ -1112,9 +1126,17 @@ class ChatCompletionsRequestHandler(TextCompletionsRequestHandler):
 
         # Reasoning tokens trigger TTFT (updated=True) but are not
         # considered "content" for the TTFOT metric.
-        if reasoning := (delta.get("reasoning") or delta.get("reasoning_content")):
-            self.streaming_reasoning_texts.append(reasoning)
-            updated = True
+        # The isinstance(str) check is required, not defensive typing: some
+        # servers send structured reasoning (dict/list) under these keys, and
+        # a non-str appended here reaches "".join(streaming_reasoning_texts)
+        # at response construction and raises TypeError, failing the request.
+        for reasoning_key in REASONING_DELTA_KEYS:
+            reasoning = delta.get(reasoning_key)
+            if isinstance(reasoning, str) and reasoning:
+                # Servers send at most one of these keys per delta.
+                self.streaming_reasoning_texts.append(reasoning)
+                updated = True
+                break
         if content := delta.get("content"):
             self.streaming_texts.append(content)
             updated = True
